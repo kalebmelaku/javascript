@@ -1,6 +1,6 @@
 const btn = document.getElementById('btn');
 const ul = document.getElementById('items');
-const box = document.getElementById('box')
+const box = document.getElementById('box');
 // btn.addEventListener('click', (e) =>
 // {
 //     console.log(e.target);
@@ -33,8 +33,80 @@ const form = document.querySelector('form');
 
 form.addEventListener('submit', (e) =>
 {
-    console.log("form submitted");
-    input.value = ''
 
+    if (input.value.length > 0) {
+        let li = document.createElement('li');
+        let link = document.createElement('a');
+
+        li.className = 'list-group-item';
+        li.classList.add('d-flex');
+        li.classList.add('justify-content-between');
+        link.className = 'delete';
+
+        // link.innerText = '<i class="fa-solid fa-x delete text-danger"></i>'
+
+        let text = document.createTextNode(input.value);
+        link.appendChild(document.createTextNode('X'));
+
+        li.appendChild(text);
+        li.appendChild(link);
+        ul.appendChild(li);
+        saveToLocalStorage(input.value);
+    } else {
+        console.log('Please Fill the input');
+    }
+
+
+    input.value = '';
     e.preventDefault();
-})
+});
+
+ul.addEventListener('click', (e) =>
+{
+    if (e.target.classList.contains('delete')) {
+        e.target.parentNode.remove();
+    }
+});
+
+btn.addEventListener('click', (e) =>
+{
+    ul.innerHTML = '';
+    localStorage.clear()
+});
+
+function saveToLocalStorage(name)
+{
+    let users;
+    if (localStorage.getItem('users') != null) {
+        users = JSON.parse(localStorage.getItem('users'));
+    } else {
+        users = [];
+    }
+    users.push(name);
+
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+window.addEventListener('DOMContentLoaded', () =>
+{
+    const users = JSON.parse(localStorage.getItem('users'));
+    users.forEach((user) =>
+    {
+        let li = document.createElement('li');
+        let link = document.createElement('a');
+
+        li.className = 'list-group-item';
+        li.classList.add('d-flex');
+        li.classList.add('justify-content-between');
+        link.className = 'delete';
+
+        // link.innerText = '<i class="fa-solid fa-x delete text-danger"></i>'
+
+        let text = document.createTextNode(user);
+        link.appendChild(document.createTextNode('X'));
+
+        li.appendChild(text);
+        li.appendChild(link);
+        ul.appendChild(li);
+    })
+});
